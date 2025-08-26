@@ -5,8 +5,8 @@ import { toast } from "react-hot-toast";
 
 interface ShortLink {
   id: string;
-  originalUrl: string;
-  shortCode: string;
+  original_link: string;
+  short_code: string;
   clicks: number;
   createdAt: string;
 }
@@ -17,8 +17,8 @@ interface ShortLinkState {
   error: string | null;
   fetchLinks: () => Promise<void>;
   createLink: (data: {
-    originalUrl: string;
-    shortCode?: string;
+    original_link: string;
+    short_code?: string;
   }) => Promise<void>;
   deleteLink: (id: string) => Promise<void>;
 }

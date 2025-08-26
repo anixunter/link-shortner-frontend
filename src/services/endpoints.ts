@@ -12,6 +12,8 @@ export const endpoints = {
     create: `${API_BASE_URL}/link/`,
     update: (id: string) => `${API_BASE_URL}/link/${id}/`,
     delete: (id: string) => `${API_BASE_URL}/link/${id}/`,
+    lookup: (short_code: string) =>
+      `${API_BASE_URL}/link/lookup/${short_code}/`,
   },
   user: {
     me: `${API_BASE_URL}/user/`,

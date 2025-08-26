@@ -2,25 +2,25 @@ import React, { useState } from 'react';
 import { useShortLinkStore } from '../stores/shortLinkStore';
 
 const ShortLinkForm: React.FC = () => {
-  const [originalUrl, setOriginalUrl] = useState('');
-  const [shortCode, setShortCode] = useState('');
+  const [original_link, setOriginal_link] = useState('');
+  const [short_code, setShort_code] = useState('');
   const { createLink, isLoading } = useShortLinkStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!originalUrl) return;
+    if (!original_link) return;
     
     // Simple URL validation
     try {
-      new URL(originalUrl);
+      new URL(original_link);
     } catch (_) {
       alert('Please enter a valid URL.');
       return;
     }
     
-    createLink({ originalUrl, shortCode: shortCode || undefined });
-    setOriginalUrl('');
-    setShortCode('');
+    createLink({ original_link, short_code: short_code || undefined });
+    setOriginal_link('');
+    setShort_code('');
   };
 
   return (
@@ -29,16 +29,16 @@ const ShortLinkForm: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-4">
         <input
           type="text"
-          value={originalUrl}
-          onChange={(e) => setOriginalUrl(e.target.value)}
+          value={original_link}
+          onChange={(e) => setOriginal_link(e.target.value)}
           placeholder="Enter long URL here..."
           className="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
           type="text"
-          value={shortCode}
-          onChange={(e) => setShortCode(e.target.value)}
+          value={short_code}
+          onChange={(e) => setShort_code(e.target.value)}
           placeholder="Custom code (optional)"
           className="md:w-1/4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />

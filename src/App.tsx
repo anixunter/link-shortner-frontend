@@ -12,6 +12,7 @@ import DashboardLayout from './components/layouts/DashboardLayout';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import DashboardPage from './pages/DashboardPage';
+import RedirectPage from '@/pages/RedirectPage';
 
 // Route Protection Components
 const ProtectedRoute = () => {
@@ -51,6 +52,10 @@ function App() {
         {/* Redirect root to the dashboard */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         
+        {/* --- ADD THE NEW DYNAMIC REDIRECT ROUTE HERE --- */}
+        {/* This will catch any path that hasn't been matched yet */}
+        <Route path="/:shortCode" element={<RedirectPage />} />
+
         {/* 404 Handler */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -5,13 +5,14 @@ import { toast } from 'react-hot-toast';
 
 interface ShortLink {
   id: string;
-  originalUrl: string;
-  shortCode: string;
+  original_link: string;
+  short_code: string;
 }
 
 const LinkItem: React.FC<{ link: ShortLink }> = ({ link }) => {
   const { deleteLink } = useShortLinkStore();
-  const shortUrl = `${window.location.origin}/${link.shortCode}`;
+    const shortUrl = `${window.location.origin}/${link.short_code}`;
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shortUrl);
@@ -21,7 +22,7 @@ const LinkItem: React.FC<{ link: ShortLink }> = ({ link }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="flex-grow overflow-hidden">
-        <p className="text-gray-500 truncate">{link.originalUrl}</p>
+        <p className="text-gray-500 truncate">{link.original_link}</p>
         <a href={shortUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-semibold hover:underline">
           {shortUrl}
         </a>
