@@ -1,35 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { useAuthStore } from './stores/authStore';
+
+// Layouts
+import AuthLayout from './components/layouts/AuthLayout';
+import DashboardLayout from './components/layouts/DashboardLayout';
+
+// Pages
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
+import DashboardPage from './pages/DashboardPage';
+
+// Route Protection Components
+const ProtectedRoute = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  return isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" replace />;
+};
+
+const GuestRoute = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  return !isAuthenticated ? <AuthLayout /> : <Navigate to="/dashboard" replace />;
+};
+
+const NotFoundPage = () => (
+    <div className="flex items-center justify-center h-screen">
+        <h1 className="text-4xl">404 - Not Found</h1>
+    </div>
+)
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Toaster position="top-right" reverseOrder={false} />
+      <Routes>
+        {/* Guest routes (Login, SignUp) */}
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Route>
+
+        {/* Protected routes (Dashboard) */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          {/* Add other dashboard routes here */}
+        </Route>
+        
+        {/* Redirect root to the dashboard */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        
+        {/* 404 Handler */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
