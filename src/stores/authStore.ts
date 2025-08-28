@@ -21,7 +21,7 @@ interface AuthState {
   signup: (userData: Record<string, string>) => Promise<void>;
   logout: () => void;
   setTokens: (tokens: { accessToken: string; refreshToken?: string }) => void;
-  fetchUser: () => Promise<void>;
+  fetchSelf: () => Promise<void>;
   initialize: () => void;
 }
 
@@ -45,7 +45,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // --- FETCH USER DATA ---
-      fetchUser: async () => {
+      fetchSelf: async () => {
         try {
           // The request interceptor will automatically add the auth header
           const response = await apiClient.get<User>(endpoints.user.self);
@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthState>()(
           });
 
           // Step 2: Call the new action to fetch user data
-          await get().fetchUser();
+          await get().fetchSelf();
 
           // Toast message now uses the user from the state AFTER it has been fetched
           const username = get().user?.username;
@@ -124,7 +124,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isAuthenticated: true });
           // If tokens exist, validate the session by fetching the user again.
           // This ensures the user is still valid on the backend.
-          get().fetchUser();
+          get().fetchSelf();
         }
       },
     }),
