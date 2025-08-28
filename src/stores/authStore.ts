@@ -21,6 +21,7 @@ interface AuthState {
   signup: (userData: Record<string, string>) => Promise<void>;
   logout: () => void;
   setTokens: (tokens: { accessToken: string; refreshToken?: string }) => void;
+  fetchUser: () => Promise<void>;
   initialize: () => void;
 }
 
@@ -43,26 +44,50 @@ export const useAuthStore = create<AuthState>()(
         }));
       },
 
+      // --- FETCH USER DATA ---
+      fetchUser: async () => {
+        try {
+          // The request interceptor will automatically add the auth header
+          const response = await apiClient.get<User>(endpoints.user.self);
+          set({ user: response.data, error: null });
+        } catch (error) {
+          console.error("Failed to fetch user data. Session may be invalid.");
+          // If we can't fetch the user, something is wrong. Log them out.
+          get().logout();
+        }
+      },
+
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
+          // step 1: get tokens from the login endpoint
           const response = await apiClient.post(
             endpoints.auth.login,
             credentials
           );
-          const { access, refresh, user } = response.data;
+          const { access, refresh } = response.data;
+
+          // set the tokens and authentication status
           set({
             accessToken: access,
             refreshToken: refresh,
-            user,
             isAuthenticated: true,
-            isLoading: false,
           });
-          toast.success(`Welcome back, ${user.username}!`);
+
+          // Step 2: Call the new action to fetch user data
+          await get().fetchUser();
+
+          // Toast message now uses the user from the state AFTER it has been fetched
+          const username = get().user?.username;
+          if (username) {
+            toast.success(`Welcome back, ${username}!`);
+          }
         } catch (error: any) {
           const errorMessage = error.response?.data?.message || "Login failed";
           set({ error: errorMessage, isLoading: false });
           toast.error(errorMessage);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
@@ -94,9 +119,12 @@ export const useAuthStore = create<AuthState>()(
 
       // Called on app start to check for persisted session
       initialize: () => {
-        const { accessToken, refreshToken, user } = get();
-        if (accessToken && refreshToken && user) {
+        const { accessToken, refreshToken } = get();
+        if (accessToken && refreshToken) {
           set({ isAuthenticated: true });
+          // If tokens exist, validate the session by fetching the user again.
+          // This ensures the user is still valid on the backend.
+          get().fetchUser();
         }
       },
     }),

@@ -16,6 +16,6 @@ export const endpoints = {
       `${API_BASE_URL}/link/lookup/${short_code}/`,
   },
   user: {
-    me: `${API_BASE_URL}/user/`,
+    self: `${API_BASE_URL}/user/self/`,
   },
 };
