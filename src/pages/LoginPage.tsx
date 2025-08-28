@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
         </div>
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <div>
-          <button type="submit" disabled={isLoading} className="group relative w-full flex justify-center py-2 px-4 ...">
+          <button type="submit" className="px-6 py-3 bg-indigo-600 text-white font-semibold cursor-pointer rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors" disabled={isLoading}>
             {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </div>

@@ -16,6 +16,7 @@ const LinkItem: React.FC<{ link: ShortLink }> = ({ link }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedOriginalLink, setEditedOriginalLink] = useState(link.original_link);
   const [editedShortCode, setEditedShortCode] = useState(link.short_code);
+  const [clicks, setClicks] = useState(link.clicks)
 
   const shortUrl = `${window.location.origin}/${link.short_code}`;
 
@@ -72,12 +73,12 @@ const LinkItem: React.FC<{ link: ShortLink }> = ({ link }) => {
           // --- DISPLAY MODE VIEW ---
           <>
             <p className="text-gray-500 truncate" title={link.original_link}>{link.original_link}</p>
-            <a href={shortUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-semibold hover:underline">
+            <a href={shortUrl} target="_blank" onClick={()=>setClicks(clicks + 1)} rel="noopener noreferrer" className="text-indigo-600 font-semibold hover:underline">
               {shortUrl}
             </a>
             <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
                 <FaMousePointer />
-                <span>{link.clicks} clicks</span>
+                <span>{clicks} clicks</span>
             </div>
           </>
         )}
