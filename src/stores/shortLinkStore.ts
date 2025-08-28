@@ -20,6 +20,11 @@ interface ShortLinkState {
     original_link: string;
     short_code?: string;
   }) => Promise<void>;
+  updateLink: (data: {
+    id: string;
+    original_link?: string;
+    short_code?: string;
+  }) => Promise<void>;
   deleteLink: (id: string) => Promise<void>;
 }
 
@@ -56,6 +61,28 @@ export const useShortLinkStore = create<ShortLinkState>((set) => ({
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Failed to create link";
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+    }
+  },
+
+  updateLink: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.patch<ShortLink>(
+        endpoints.links.update(data.id),
+        data
+      );
+      set((state) => ({
+        links: state.links.map((link) =>
+          link.id === response.data.id ? response.data : link
+        ),
+        isLoading: false,
+      }));
+      toast.success("Link updated successfully!");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to update link";
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
     }
