@@ -36,7 +36,6 @@ export const useShortLinkStore = create<ShortLinkState>((set) => ({
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Failed to fetch links";
-      console.log(errorMessage);
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
     }
